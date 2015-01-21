@@ -17,6 +17,14 @@
         <servlet-name>Serve</servlet-name>
         <servlet-class>com.eweware.phototoss.Serve</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>GetUploadURL</servlet-name>
+        <servlet-class>com.eweware.phototoss.api.GetUploadURL</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>uploadImage</servlet-name>
+        <servlet-class>com.eweware.phototoss.api.UploadImage</servlet-class>
+    </servlet>
 
     <servlet-mapping>
         <servlet-name>Upload</servlet-name>
@@ -31,6 +39,17 @@
     <servlet-mapping>
         <servlet-name>uploadTest</servlet-name>
         <url-pattern>/uploadTest</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>GetUploadURL</servlet-name>
+        <url-pattern>/api/uploadURL</url-pattern>
+    </servlet-mapping>
+
+
+    <servlet-mapping>
+        <servlet-name>uploadImage</servlet-name>
+        <url-pattern>/api/uploadImage</url-pattern>
     </servlet-mapping>
 
 
