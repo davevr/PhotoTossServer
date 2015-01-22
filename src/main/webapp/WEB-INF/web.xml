@@ -65,6 +65,10 @@
         <servlet-name>Logout</servlet-name>
         <servlet-class>com.eweware.phototoss.api.Logout</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>GetCatchURL</servlet-name>
+        <servlet-class>com.eweware.phototoss.api.GetCatchURL</servlet-class>
+    </servlet>
 
     <servlet-mapping>
         <servlet-name>Login</servlet-name>
