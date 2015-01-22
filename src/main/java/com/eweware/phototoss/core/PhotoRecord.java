@@ -1,22 +1,31 @@
 package com.eweware.phototoss.core;
 
+import com.googlecode.objectify.annotation.Id;
+import com.googlecode.objectify.annotation.Entity;
+import com.googlecode.objectify.annotation.Index;
+import com.googlecode.objectify.annotation.Unindex;
+
 import java.util.Date;
 import java.util.List;
 
 /**
  * Created by Dave on 1/19/2015.
  */
+@Entity
+@Index
 public class PhotoRecord {
-    public String id;
-    public String caption;
-    public long totalshares;
-    public String ownername ;
-    public String ownerid;
+    @Id public Long id;
+    public Long originid;
+    public Long parentid;
+    @Unindex public String caption;
+    @Unindex public long totalshares;
+    @Unindex public String ownername ;
+    public Long ownerid;
     public List<String> tags ;
-    public String sharedfromname ;
+    @Unindex public String sharedfromname ;
     public String sharedfromid ;
-    public int myshares ;
-    public int mysharesessions ;
+    @Unindex public int myshares ;
+    @Unindex public int mysharesessions ;
     public Date received ;
     public Date created;
     public Date lastsharedbyuser ;
@@ -25,9 +34,12 @@ public class PhotoRecord {
     public double createdlong ;
     public double receivedlat ;
     public String receivedcaption ;
-    public String receivedtags ;
-    public String imageUrl ;
-    public String catchUrl;
+    public List<String> receivedtags ;
+    @Unindex public String imageUrl ;
+    @Unindex public String catchUrl;
+    @Unindex public String thumbnailUrl;
+
+    public PhotoRecord() {}
 
 
 }
