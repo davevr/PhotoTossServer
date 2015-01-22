@@ -16,6 +16,10 @@
         <servlet-name>loginTest</servlet-name>
         <jsp-file>/signintest.jsp</jsp-file>
     </servlet>
+    <servlet>
+        <servlet-name>viewTest</servlet-name>
+        <jsp-file>/viewimage.jsp</jsp-file>
+    </servlet>
 
     <servlet>
         <servlet-name>Upload</servlet-name>
@@ -138,8 +142,18 @@
     </servlet-mapping>
 
     <servlet-mapping>
+        <servlet-name>viewTest</servlet-name>
+        <url-pattern>/image</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
         <servlet-name>GetUploadURL</servlet-name>
         <url-pattern>/api/uploadURL</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>GetCatchURL</servlet-name>
+        <url-pattern>/api/catchURL</url-pattern>
     </servlet-mapping>
 
 
