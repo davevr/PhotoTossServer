@@ -5,9 +5,7 @@ import com.eweware.phototoss.core.UserRecord;
 import com.google.appengine.api.blobstore.BlobKey;
 import com.google.appengine.api.blobstore.BlobstoreService;
 import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
-import com.google.appengine.api.images.ImagesService;
-import com.google.appengine.api.images.ImagesServiceFactory;
-import com.google.appengine.api.images.ServingUrlOptions;
+import com.google.appengine.api.images.*;
 import com.google.appengine.repackaged.com.google.api.client.http.HttpStatusCodes;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -27,10 +25,29 @@ import java.util.Map;
 import static com.googlecode.objectify.ObjectifyService.ofy;
 
 /**
- * Created by ultradad on 1/21/15.
+ * Created by ultradad on 1/28/15.
  */
-public class CatchToss extends HttpServlet {
+public class UserImage extends HttpServlet {
     private BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
+
+
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+        if (Authenticator.getInstance().UserIsLoggedIn(request.getSession())) {
+            BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
+            String theUrl = blobstoreService.createUploadUrl("/api/user/image");
+
+            PrintWriter out = response.getWriter();
+            out.write(theUrl);
+            out.flush();
+            out.close();
+        } else {
+            response.setStatus(HttpStatusCodes.STATUS_CODE_FORBIDDEN);
+        }
+    }
+
+
+
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         // ensure user is signed in
@@ -53,25 +70,13 @@ public class CatchToss extends HttpServlet {
 
                 String servingUrl = imagesService.getServingUrl(servingOptions);
 
-
-                PhotoRecord data = new PhotoRecord();
-                data.ownerid = curUser.id;
-                data.ownername = curUser.username;
-                data.imageUrl = servingUrl;
-                data.caption = request.getParameter("caption");
-                data.tags = new ArrayList<String>();
-                data.tags.add(request.getParameter("tags"));
-                data.created = new Date();
+                 curUser.imageurl = servingUrl;
 
                 // save to store
-                ofy().save().entity(data).now();
+                ofy().save().entity(curUser).now();
 
-
-                // write it to the user
-                response.setContentType("application/json");
                 PrintWriter out = response.getWriter();
-                Gson gson = new GsonBuilder().create();
-                gson.toJson(data, out);
+                out.write(servingUrl);
                 out.flush();
                 out.close();
             }

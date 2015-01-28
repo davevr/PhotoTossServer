@@ -1,10 +1,6 @@
 package com.eweware.phototoss.api;
 
-import com.eweware.phototoss.core.*;
-import com.google.appengine.api.blobstore.BlobKey;
-import com.google.appengine.api.images.ImagesService;
-import com.google.appengine.api.images.ImagesServiceFactory;
-import com.google.appengine.api.images.ServingUrlOptions;
+import com.eweware.phototoss.core.UserRecord;
 import com.google.appengine.repackaged.com.google.api.client.http.HttpStatusCodes;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -16,10 +12,11 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
-import java.util.Map;
+
+import com.eweware.phototoss.core.*;
+import com.googlecode.objectify.Key;
+import com.googlecode.objectify.VoidWork;
 
 import static com.googlecode.objectify.ObjectifyService.ofy;
 
@@ -28,43 +25,73 @@ import static com.googlecode.objectify.ObjectifyService.ofy;
  */
 public class StartToss extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-// ensure user is signed in
-        HttpSession session = request.getSession();
+        HttpSession session = request.getSession(true);
+        String imageIdStr = request.getParameter("image");
+        String gameTypeStr = request.getParameter("game");
+        String shareLatStr = request.getParameter("lat");
+        String shareLongStr = request.getParameter("long");
+        int gameType = 0;
+        double longitude = 0.0;
+        double latitude = 0.0;
 
+        long userId = Authenticator.CurrentUserId(session);
 
-        UserRecord curUser = Authenticator.CurrentUser(session);
-        long imageId = Long.parseLong(request.getParameter("id"));
+        if (userId != 0) {
+            try {
+                // all parameters are required
+                if ((imageIdStr == null) ||
+                        (gameTypeStr == null) ||
+                        (shareLatStr == null) ||
+                        (shareLongStr == null)) {
+                    response.setStatus(400);
 
-        if (curUser != null) {
+                } else {
+                    // good to go
+                    final long imageId = Long.parseLong(imageIdStr);
+                    gameType = Integer.parseInt(gameTypeStr);
+                    latitude = Double.parseDouble(shareLatStr);
+                    longitude = Double.parseDouble(shareLongStr);
 
-            TossRecord data = new TossRecord();
-            data.ownerid = curUser.id;
-            data.ownername = curUser.username;
-            data.imageUrl = servingUrl;
-            data.caption = request.getParameter("caption");
-            data.tags = new ArrayList<String>();
-            data.tags.add(request.getParameter("tags"));
-            data.created = new Date();
+                    TossRecord newToss = new TossRecord();
 
-            // save to store
-            ofy().save().entity(data).now();
+                    newToss.catchCount = 0L;
+                    newToss.gameType = gameType;
+                    newToss.imageId = imageId;
+                    newToss.ownerId = userId;
+                    newToss.shareLat = latitude;
+                    newToss.shareLong = longitude;
+                    newToss.shareTime = new Date();
 
+                    ofy().save().entity(newToss).now();
 
-            // write it to the user
-            response.setContentType("application/json");
-            PrintWriter out = response.getWriter();
-            Gson gson = new GsonBuilder().create();
-            gson.toJson(data, out);
-            out.flush();
-            out.close();
+                    ofy().transact(new VoidWork() {
+                        public void vrun() {
+                            PhotoRecord sharedImage = ofy().load().key(Key.create(PhotoRecord.class, imageId)).now();
+                            sharedImage.tossCount++;
+                            sharedImage.lastshared = new Date();
+                            ofy().save().entity(sharedImage);
+                        }
+                    });
+
+                    // we have signed in ok
+                    response.setContentType("application/json");
+                    PrintWriter out = response.getWriter();
+                    Gson gson = new GsonBuilder().create();
+                    gson.toJson(newToss, out);
+                    out.flush();
+                    out.close();
+                }
+
+            }
+            catch (Exception exp)
+            {
+                response.setStatus(500);
+            }
+        } else {
+            // fail
+            response.setStatus(HttpStatusCodes.STATUS_CODE_FORBIDDEN);
         }
-        else {
-            response.setStatus(HttpStatusCodes.STATUS_CODE_UNAUTHORIZED);
-        }
-    }
     }
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-    }
 }

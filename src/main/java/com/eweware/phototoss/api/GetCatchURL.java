@@ -12,15 +12,14 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 /**
- * Created by Dave on 1/21/2015.
+ * Created by ultradad on 1/26/15.
  */
 public class GetCatchURL extends HttpServlet {
-
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         if (Authenticator.getInstance().UserIsLoggedIn(request.getSession())) {
             BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
-            String theUrl = blobstoreService.createUploadUrl("/api/catchImage");
+            String theUrl = blobstoreService.createUploadUrl("/api/catch");
 
             PrintWriter out = response.getWriter();
             out.write(theUrl);
@@ -29,5 +28,10 @@ public class GetCatchURL extends HttpServlet {
         } else {
             response.setStatus(HttpStatusCodes.STATUS_CODE_FORBIDDEN);
         }
+
+
+
     }
+
+
 }

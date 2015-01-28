@@ -36,6 +36,24 @@ import static com.googlecode.objectify.ObjectifyService.ofy;
 public class UploadImage extends HttpServlet {
     private BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
 
+
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+        if (Authenticator.getInstance().UserIsLoggedIn(request.getSession())) {
+            BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
+            String theUrl = blobstoreService.createUploadUrl("/api/uploadImage");
+
+            PrintWriter out = response.getWriter();
+            out.write(theUrl);
+            out.flush();
+            out.close();
+        } else {
+            response.setStatus(HttpStatusCodes.STATUS_CODE_FORBIDDEN);
+        }
+    }
+
+
+
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         // ensure user is signed in
@@ -52,6 +70,16 @@ public class UploadImage extends HttpServlet {
                 response.setStatus(HttpServletResponse.SC_NOT_FOUND);
             }
             else {
+                String longStr = request.getParameter("long");
+                String latStr = request.getParameter("lat");
+
+                if ((longStr == null) || (latStr == null)) {
+                    response.setStatus(400);
+                    return;
+                }
+                double longitude = Double.parseDouble(longStr);
+                double latitude = Double.parseDouble(latStr);
+
                 // get an image server URL
                 ImagesService imagesService = ImagesServiceFactory.getImagesService();
                 ServingUrlOptions servingOptions = ServingUrlOptions.Builder.withBlobKey(blobKeys.get(0));
@@ -63,10 +91,13 @@ public class UploadImage extends HttpServlet {
                 data.ownerid = curUser.id;
                 data.ownername = curUser.username;
                 data.imageUrl = servingUrl;
+                data.thumbnailUrl = servingUrl;
                 data.caption = request.getParameter("caption");
                 data.tags = new ArrayList<String>();
                 data.tags.add(request.getParameter("tags"));
                 data.created = new Date();
+                data.createdlong = longitude;
+                data.createdlat = latitude;
 
                 // save to store
                 ofy().save().entity(data).now();

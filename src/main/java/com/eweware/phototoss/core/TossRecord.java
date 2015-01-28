@@ -7,19 +7,18 @@ import com.googlecode.objectify.annotation.Index;
 import java.util.Date;
 
 /**
- * Created by Dave on 1/21/2015.
+ * Created by ultradad on 1/27/15.
  */
-
 @Entity
 @Index
 public class TossRecord {
-    @Id public Long id;
-    public Date tossdate;
-    public Long imageid;
-    public Long originalimageid;
-    public Long ownerid;
-    public Long catchcount;
-    public double tosslong;
-    public double tosslat;
-
+    @Id
+    public Long id;
+    public Long ownerId;
+    public Long imageId;
+    public int gameType;
+    public Long catchCount;
+    public Date shareTime;
+    public double shareLong;
+    public double shareLat;
 }

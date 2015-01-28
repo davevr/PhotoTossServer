@@ -15,18 +15,14 @@
 
 <html>
 <head>
-    <title></title>
+  <title></title>
 </head>
 <body>
 This is an upload test.  Choose an image my friend!
 
-<form action="<%= blobstoreService.createUploadUrl("/api/uploadImage") %>" method="post" enctype="multipart/form-data">
+<form action="<%= blobstoreService.createUploadUrl("/api/user/image") %>" method="post" enctype="multipart/form-data">
   <input type="file" name="file"><p/>
 
-  caption: <input type="text" title="caption" name="caption"><p/>
-  tags: <input type="text" title="tags" name="tags"><p/>
-  lat: <input type="text" title="lat" name="lat"><p/>
-  long: <input type="text" title="long" name="long"><p/>
   <input type="submit" value="Submit">
 </form>
 

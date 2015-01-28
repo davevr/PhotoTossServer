@@ -7,7 +7,7 @@ import com.googlecode.objectify.annotation.Index;
 import java.util.Date;
 
 /**
- * Created by Dave on 1/21/2015.
+ * Created by ultradad on 1/27/15.
  */
 
 @Entity
@@ -15,11 +15,9 @@ import java.util.Date;
 public class CatchRecord {
     @Id
     public Long id;
-    public Date catchdate;
-    public Long imageid;
-    public Long tossid;
-    public Long catchimageid;
-    public Long tosserid;
-    public double catchlong;
-    public double catchlat;
+    public Date catchTime;
+    public Long tossId;
+    public Long catcherId;
+    public Long tosserId;
+
 }

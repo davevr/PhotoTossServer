@@ -21,4 +21,5 @@ public class UserRecord {
     @Unindex public Date creationDate;
     public Date lastActiveDate;
     public Boolean signedOn;
+    @Unindex public String imageurl;
 }

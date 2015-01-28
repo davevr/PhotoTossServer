@@ -14,30 +14,35 @@ import java.util.List;
 @Entity
 @Index
 public class PhotoRecord {
+    // unique for each photo
     @Id public Long id;
-    public Long originid;
-    public Long parentid;
-    @Unindex public String caption;
-    @Unindex public long totalshares;
     @Unindex public String ownername ;
     public Long ownerid;
-    public List<String> tags ;
-    @Unindex public String sharedfromname ;
-    public String sharedfromid ;
-    @Unindex public int myshares ;
-    @Unindex public int mysharesessions ;
-    public Date received ;
+
+    // copied from source image
+    @Unindex public String caption;
     public Date created;
-    public Date lastsharedbyuser ;
-    public Date lastshared ;
     public double createdlat;
     public double createdlong ;
-    public double receivedlat ;
-    public String receivedcaption ;
-    public List<String> receivedtags ;
     @Unindex public String imageUrl ;
-    @Unindex public String catchUrl;
     @Unindex public String thumbnailUrl;
+    public List<String> tags ;
+
+    // completed on a toss on the new image
+    public Long originid;   // original image
+    public Long parentid;   // most recent image
+    @Unindex public String catchUrl;
+    public String receivedcaption ;
+    public double receivedlat ;
+    public double receivedlong;
+    public Date received ;
+    public Long tosserid;
+
+    // updated on an image after toss
+    public Date lastshared ;
+    @Unindex public int tossCount ;
+    @Unindex public Long totalshares;
+
 
     public PhotoRecord() {}
 

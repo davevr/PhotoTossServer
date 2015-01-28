@@ -4,37 +4,41 @@
          xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
          version="3.1">
 
+    <!-- SERVER JSP PAGES -->
     <servlet>
         <servlet-name>uploadTest</servlet-name>
         <jsp-file>/uploadtest.jsp</jsp-file>
     </servlet>
+
+    <servlet>
+        <servlet-name>tossTest</servlet-name>
+        <jsp-file>/tosstest.jsp</jsp-file>
+    </servlet>
+
+    <servlet>
+        <servlet-name>catchTest</servlet-name>
+        <jsp-file>/catchtest.jsp</jsp-file>
+    </servlet>
+
     <servlet>
         <servlet-name>createUserTest</servlet-name>
         <jsp-file>/createtest.jsp</jsp-file>
     </servlet>
+
     <servlet>
         <servlet-name>loginTest</servlet-name>
         <jsp-file>/signintest.jsp</jsp-file>
     </servlet>
-    <servlet>
-        <servlet-name>viewTest</servlet-name>
-        <jsp-file>/viewimage.jsp</jsp-file>
-    </servlet>
 
     <servlet>
-        <servlet-name>Upload</servlet-name>
-        <servlet-class>com.eweware.phototoss.Upload</servlet-class>
+        <servlet-name>userImageTest</servlet-name>
+        <jsp-file>/userimagetest.jsp</jsp-file>
     </servlet>
+
+
+    <!-- SERVER JAVA SERVLETS -->
     <servlet>
-        <servlet-name>Serve</servlet-name>
-        <servlet-class>com.eweware.phototoss.Serve</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>GetUploadURL</servlet-name>
-        <servlet-class>com.eweware.phototoss.api.GetUploadURL</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>uploadImage</servlet-name>
+        <servlet-name>UploadImage</servlet-name>
         <servlet-class>com.eweware.phototoss.api.UploadImage</servlet-class>
     </servlet>
     <servlet>
@@ -48,10 +52,6 @@
     <servlet>
         <servlet-name>StartToss</servlet-name>
         <servlet-class>com.eweware.phototoss.api.StartToss</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>GetTossStatus</servlet-name>
-        <servlet-class>com.eweware.phototoss.api.GetTossStatus</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>CatchToss</servlet-name>
@@ -69,10 +69,13 @@
         <servlet-name>Logout</servlet-name>
         <servlet-class>com.eweware.phototoss.api.Logout</servlet-class>
     </servlet>
+
     <servlet>
-        <servlet-name>GetCatchURL</servlet-name>
-        <servlet-class>com.eweware.phototoss.api.GetCatchURL</servlet-class>
+        <servlet-name>UserImage</servlet-name>
+        <servlet-class>com.eweware.phototoss.api.UserImage</servlet-class>
     </servlet>
+
+    <!-- server mappings - API -->
 
     <servlet-mapping>
         <servlet-name>Login</servlet-name>
@@ -110,20 +113,21 @@
     </servlet-mapping>
 
     <servlet-mapping>
-        <servlet-name>GetTossStatus</servlet-name>
-        <url-pattern>/api/toss/status</url-pattern>
+        <servlet-name>UserImage</servlet-name>
+        <url-pattern>/api/user/image</url-pattern>
     </servlet-mapping>
 
 
+    <!-- server mappings - WEB PAGES -->
 
     <servlet-mapping>
-        <servlet-name>Upload</servlet-name>
-        <url-pattern>/upload</url-pattern>
+        <servlet-name>tossTest</servlet-name>
+        <url-pattern>/tosstest</url-pattern>
     </servlet-mapping>
 
     <servlet-mapping>
-        <servlet-name>Serve</servlet-name>
-        <url-pattern>/serve</url-pattern>
+        <servlet-name>catchTest</servlet-name>
+        <url-pattern>/catchtest</url-pattern>
     </servlet-mapping>
 
     <servlet-mapping>
@@ -142,26 +146,12 @@
     </servlet-mapping>
 
     <servlet-mapping>
-        <servlet-name>viewTest</servlet-name>
-        <url-pattern>/image</url-pattern>
-    </servlet-mapping>
-
-    <servlet-mapping>
-        <servlet-name>GetUploadURL</servlet-name>
-        <url-pattern>/api/uploadURL</url-pattern>
-    </servlet-mapping>
-
-    <servlet-mapping>
-        <servlet-name>GetCatchURL</servlet-name>
-        <url-pattern>/api/catchURL</url-pattern>
+        <servlet-name>userImageTest</servlet-name>
+        <url-pattern>/userimagetest</url-pattern>
     </servlet-mapping>
 
 
-    <servlet-mapping>
-        <servlet-name>uploadImage</servlet-name>
-        <url-pattern>/api/uploadImage</url-pattern>
-    </servlet-mapping>
-
+   <!-- listeners and filters -->
     <listener>
         <listener-class>com.eweware.phototoss.PhotoTossServerListener</listener-class>
     </listener>
