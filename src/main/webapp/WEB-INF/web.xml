@@ -35,6 +35,12 @@
         <jsp-file>/userimagetest.jsp</jsp-file>
     </servlet>
 
+    <servlet>
+        <servlet-name>statstest</servlet-name>
+        <jsp-file>/statstest.jsp</jsp-file>
+    </servlet>
+
+
 
     <!-- SERVER JAVA SERVLETS -->
     <servlet>
@@ -73,6 +79,14 @@
     <servlet>
         <servlet-name>UserImage</servlet-name>
         <servlet-class>com.eweware.phototoss.api.UserImage</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>StatsProcessor</servlet-name>
+        <servlet-class>com.eweware.phototoss.api.StatsProcessor</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>StatsEnqueue</servlet-name>
+        <servlet-class>com.eweware.phototoss.api.StatsEnqueue</servlet-class>
     </servlet>
 
     <!-- server mappings - API -->
@@ -117,8 +131,23 @@
         <url-pattern>/api/user/image</url-pattern>
     </servlet-mapping>
 
+    <servlet-mapping>
+        <servlet-name>StatsProcessor</servlet-name>
+        <url-pattern>/api/stats/process</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>StatsEnqueue</servlet-name>
+        <url-pattern>/api/stats/enqueue</url-pattern>
+    </servlet-mapping>
+
 
     <!-- server mappings - WEB PAGES -->
+
+    <servlet-mapping>
+        <servlet-name>statstest</servlet-name>
+        <url-pattern>/statstest</url-pattern>
+    </servlet-mapping>
 
     <servlet-mapping>
         <servlet-name>tossTest</servlet-name>
