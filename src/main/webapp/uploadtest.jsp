@@ -20,7 +20,7 @@
 <body>
 This is an upload test.  Choose an image my friend!
 
-<form action="<%= blobstoreService.createUploadUrl("/api/uploadImage") %>" method="post" enctype="multipart/form-data">
+<form action="<%= blobstoreService.createUploadUrl("/api/image/upload") %>" method="post" enctype="multipart/form-data">
   <input type="file" name="file"><p/>
 
   caption: <input type="text" title="caption" name="caption"><p/>

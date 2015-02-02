@@ -141,6 +141,11 @@
         <url-pattern>/api/stats/enqueue</url-pattern>
     </servlet-mapping>
 
+    <servlet-mapping>
+        <servlet-name>UploadImage</servlet-name>
+        <url-pattern>/api/image/upload</url-pattern>
+    </servlet-mapping>
+
 
     <!-- server mappings - WEB PAGES -->
 

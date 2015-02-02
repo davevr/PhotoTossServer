@@ -41,7 +41,7 @@ public class UploadImage extends HttpServlet {
 
         if (Authenticator.getInstance().UserIsLoggedIn(request.getSession())) {
             BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
-            String theUrl = blobstoreService.createUploadUrl("/api/uploadImage");
+            String theUrl = blobstoreService.createUploadUrl("/api/image/upload");
 
             PrintWriter out = response.getWriter();
             out.write(theUrl);
