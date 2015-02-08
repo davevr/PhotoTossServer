@@ -1,6 +1,7 @@
 package com.eweware.phototoss.api;
 
 import com.eweware.phototoss.core.PhotoRecord;
+import com.eweware.phototoss.core.TossRecord;
 import com.eweware.phototoss.core.UserRecord;
 import com.google.appengine.api.blobstore.BlobKey;
 import com.google.appengine.api.blobstore.BlobstoreService;
@@ -26,6 +27,7 @@ import com.google.gson.GsonBuilder;
 import java.util.ArrayList;
 
 import com.eweware.phototoss.core.PhotoRecord;
+import com.googlecode.objectify.Key;
 import com.googlecode.objectify.ObjectifyService;
 import static com.googlecode.objectify.ObjectifyService.ofy;
 
@@ -70,51 +72,79 @@ public class UploadImage extends HttpServlet {
                 response.setStatus(HttpServletResponse.SC_NOT_FOUND);
             }
             else {
-                String longStr = request.getParameter("long");
-                String latStr = request.getParameter("lat");
-
-                if ((longStr == null) || (latStr == null)) {
-                    response.setStatus(400);
-                    return;
-                }
-                double longitude = Double.parseDouble(longStr);
-                double latitude = Double.parseDouble(latStr);
-
-                // get an image server URL
                 ImagesService imagesService = ImagesServiceFactory.getImagesService();
                 ServingUrlOptions servingOptions = ServingUrlOptions.Builder.withBlobKey(blobKeys.get(0));
-
                 String servingUrl = imagesService.getServingUrl(servingOptions);
+                String thumbStr = request.getParameter("thumbnail");
 
+                if ((thumbStr == null) || (thumbStr.isEmpty())) {
+                    // update the main image
+                    String longStr = request.getParameter("long");
+                    String latStr = request.getParameter("lat");
 
-                PhotoRecord data = new PhotoRecord();
-                data.ownerid = curUser.id;
-                data.ownername = curUser.username;
-                data.imageUrl = servingUrl;
-                data.thumbnailUrl = servingUrl;
-                data.caption = request.getParameter("caption");
-                data.tags = new ArrayList<String>();
-                data.tags.add(request.getParameter("tags"));
-                data.created = new Date();
-                data.createdlong = longitude;
-                data.createdlat = latitude;
+                    if ((longStr == null) || (latStr == null)) {
+                        response.setStatus(400);
+                        return;
+                    }
+                    double longitude = Double.parseDouble(longStr);
+                    double latitude = Double.parseDouble(latStr);
+                    String captionStr = request.getParameter("caption");
+                    ArrayList<String>   tags = new ArrayList<String>();
+                    tags.add(request.getParameter("tags"));
 
-                // save to store
-                ofy().save().entity(data).now();
+                    // get an image server URL
+                    PhotoRecord newRec = saveMainImage(curUser, servingUrl, captionStr, tags, latitude, longitude);
 
+                    // write it to the user
+                    response.setContentType("application/json");
+                    PrintWriter out = response.getWriter();
+                    Gson gson = new GsonBuilder().create();
+                    gson.toJson(newRec, out);
+                    out.flush();
+                    out.close();
+                } else {
+                    // update the thumbnail only
+                    String imageIdStr = request.getParameter("imageid");
+                    long imageId = Long.parseLong(imageIdStr);
 
-                // write it to the user
-                response.setContentType("application/json");
-                PrintWriter out = response.getWriter();
-                Gson gson = new GsonBuilder().create();
-                gson.toJson(data, out);
-                out.flush();
-                out.close();
+                    updateImageThumbnail(imageId, servingUrl);
+
+                    PrintWriter out = response.getWriter();
+                    out.write(servingUrl);
+                    out.flush();
+                    out.close();
+                }
+
             }
         }
         else {
             response.setStatus(HttpStatusCodes.STATUS_CODE_UNAUTHORIZED);
         }
+    }
+
+    private void updateImageThumbnail(long imageId, String servingURL) {
+        final PhotoRecord image = ofy().load().key(Key.create(PhotoRecord.class, imageId)).now();
+        image.thumbnailurl = servingURL;
+        ofy().save().entity(image);
+    }
+
+
+    private PhotoRecord saveMainImage(UserRecord curUser, String servingURL, String caption, ArrayList<String> tags, double latitude, double longitude) {
+        PhotoRecord data = new PhotoRecord();
+        data.ownerid = curUser.id;
+        data.ownername = curUser.username;
+        data.imageUrl = servingURL;
+        data.thumbnailurl = servingURL;
+        data.caption = caption;
+        data.tags = tags;
+        data.created = new Date();
+        data.createdlong = longitude;
+        data.createdlat = latitude;
+
+        // save to store
+        ofy().save().entity(data).now();
+
+        return data;
     }
 
 

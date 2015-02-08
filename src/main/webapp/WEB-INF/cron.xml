@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cronentries>
+    <cron>
+        <url>/cachecounters</url>
+        <description>cache counters every minute</description>
+        <schedule>every 1 minutes</schedule>
+    </cron>
+
+</cronentries>

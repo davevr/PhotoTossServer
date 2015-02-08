@@ -77,6 +77,7 @@ public  class Authenticator {
             Logout(session);
         }
 
+        username = username.toLowerCase();
         UserRecord newUser = ofy().load().type(UserRecord.class).filter("username =", username).first().now();
 
         try {
@@ -106,6 +107,7 @@ public  class Authenticator {
         }
 
         UserRecord newUser = null;
+        username = username.toLowerCase();
 
         newUser = ofy().load().type(UserRecord.class).filter("username =", username).first().now();
 

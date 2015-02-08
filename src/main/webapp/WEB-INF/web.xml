@@ -40,6 +40,11 @@
         <jsp-file>/statstest.jsp</jsp-file>
     </servlet>
 
+    <servlet>
+        <servlet-name>notifytestpage</servlet-name>
+        <jsp-file>/notifytest.jsp</jsp-file>
+    </servlet>
+
 
 
     <!-- SERVER JAVA SERVLETS -->
@@ -88,8 +93,17 @@
         <servlet-name>StatsEnqueue</servlet-name>
         <servlet-class>com.eweware.phototoss.api.StatsEnqueue</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>NotifyTest</servlet-name>
+        <servlet-class>com.eweware.phototoss.api.NotifyTest</servlet-class>
+    </servlet>
 
     <!-- server mappings - API -->
+
+    <servlet-mapping>
+        <servlet-name>NotifyTest</servlet-name>
+        <url-pattern>/api/test/notify</url-pattern>
+    </servlet-mapping>
 
     <servlet-mapping>
         <servlet-name>Login</servlet-name>
@@ -153,6 +167,13 @@
         <servlet-name>statstest</servlet-name>
         <url-pattern>/statstest</url-pattern>
     </servlet-mapping>
+
+
+    <servlet-mapping>
+        <servlet-name>notifytestpage</servlet-name>
+        <url-pattern>/notifytest</url-pattern>
+    </servlet-mapping>
+
 
     <servlet-mapping>
         <servlet-name>tossTest</servlet-name>

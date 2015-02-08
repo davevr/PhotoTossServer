@@ -25,7 +25,7 @@ public class PhotoRecord {
     public double createdlat;
     public double createdlong ;
     @Unindex public String imageUrl ;
-    @Unindex public String thumbnailUrl;
+    @Unindex public String thumbnailurl;
     public List<String> tags ;
 
     // completed on a toss on the new image

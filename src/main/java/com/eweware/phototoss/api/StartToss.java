@@ -69,6 +69,8 @@ public class StartToss extends HttpServlet {
                             PhotoRecord sharedImage = ofy().load().key(Key.create(PhotoRecord.class, imageId)).now();
                             sharedImage.tossCount++;
                             sharedImage.lastshared = new Date();
+                            if (sharedImage.originid == null)
+                                sharedImage.originid = sharedImage.id;
                             ofy().save().entity(sharedImage);
                         }
                     });

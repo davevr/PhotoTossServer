@@ -23,10 +23,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 import static com.googlecode.objectify.ObjectifyService.ofy;
@@ -91,6 +88,18 @@ public class CatchToss extends HttpServlet {
                     return;
                 }
 
+                final TossRecord tossRec = ofy().load().key(Key.create(TossRecord.class, (long) tossId)).now();
+                final PhotoRecord sharedImage = ofy().load().key(Key.create(PhotoRecord.class, tossRec.imageId)).now();
+                Key<PhotoRecord> curObj = ofy().load().type(PhotoRecord.class).filter("ownerid =", curUser.id).filter("originid =", sharedImage.originid).keys().first().now();
+
+                if (curObj != null) {
+                    response.setStatus(400);
+                    PrintWriter out = response.getWriter();
+                    out.write("duplicate");
+                    out.flush();
+                    out.close();
+                }
+
 
                 ImagesService imagesService = ImagesServiceFactory.getImagesService();
                 ServingUrlOptions servingOptions = ServingUrlOptions.Builder.withBlobKey(blobKeys.get(0));
@@ -99,8 +108,6 @@ public class CatchToss extends HttpServlet {
 
                 PhotoRecord data = ofy().transact(new Work<PhotoRecord>() {
                     public PhotoRecord run() {
-                        TossRecord tossRec = ofy().load().key(Key.create(TossRecord.class, (long) tossId)).now();
-                        PhotoRecord sharedImage = ofy().load().key(Key.create(PhotoRecord.class, tossRec.imageId)).now();
                         PhotoRecord newImage = new PhotoRecord();
                         newImage.ownername = curUser.username;
                         newImage.ownerid = curUser.id;
@@ -111,7 +118,7 @@ public class CatchToss extends HttpServlet {
                         newImage.createdlat = sharedImage.createdlat;
                         newImage.createdlong = sharedImage.createdlong;
                         newImage.imageUrl = sharedImage.imageUrl;
-                        newImage.thumbnailUrl = sharedImage.thumbnailUrl;
+                        newImage.thumbnailurl = sharedImage.thumbnailurl;
 
                         // copied on toss
                         if (sharedImage.originid != null)

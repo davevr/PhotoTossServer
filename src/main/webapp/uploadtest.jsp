@@ -27,6 +27,8 @@ This is an upload test.  Choose an image my friend!
   tags: <input type="text" title="tags" name="tags"><p/>
   lat: <input type="text" title="lat" name="lat"><p/>
   long: <input type="text" title="long" name="long"><p/>
+    thumbnail: <input type="text" title="thumbnail" name="thumbnail"><p/>
+    long: <input type="text" title="imageid" name="imageid"><p/>
   <input type="submit" value="Submit">
 </form>
 
