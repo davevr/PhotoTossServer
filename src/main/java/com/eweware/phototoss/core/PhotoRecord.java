@@ -16,8 +16,8 @@ import java.util.List;
 public class PhotoRecord {
     // unique for each photo
     @Id public Long id;
-    @Unindex public String ownername ;
-    public Long ownerid;
+    @Unindex public String ownername ; // original owner who took the picture
+    public Long ownerid; // id of the person who took the picture
 
     // copied from source image
     @Unindex public String caption;
@@ -31,12 +31,12 @@ public class PhotoRecord {
     // completed on a toss on the new image
     public Long originid;   // original image
     public Long parentid;   // most recent image
-    @Unindex public String catchUrl;
-    public String receivedcaption ;
-    public double receivedlat ;
-    public double receivedlong;
-    public Date received ;
-    public Long tosserid;
+    @Unindex public String catchUrl;  // the url of the image taken when this image was caught
+    public String receivedcaption ; // the caption set when this image was tossed
+    public double receivedlat ;  // the lat this image was caught at
+    public double receivedlong;  // the long this image was caught at
+    public Date received ;  // the date this image was caught
+    public Long tosserid;  // the id of the person who tossed this image
 
     // updated on an image after toss
     public Date lastshared ;

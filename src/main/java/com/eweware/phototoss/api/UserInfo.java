@@ -1,6 +1,5 @@
 package com.eweware.phototoss.api;
 
-import com.eweware.phototoss.core.PhotoRecord;
 import com.eweware.phototoss.core.UserRecord;
 import com.google.appengine.repackaged.com.google.api.client.http.HttpStatusCodes;
 import com.google.gson.Gson;
@@ -14,15 +13,13 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.List;
 
 import static com.googlecode.objectify.ObjectifyService.ofy;
 
 /**
- * Created by ultradad on 1/21/15.
+ * Created by ultradad on 2/24/15.
  */
-public class GetImage extends HttpServlet {
-
+public class UserInfo extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession();
@@ -30,19 +27,19 @@ public class GetImage extends HttpServlet {
         final UserRecord curUser = Authenticator.CurrentUser(session);
 
         if (curUser != null) {
-            String imageIdStr = request.getParameter("id");
-            final long imageId = Long.parseLong(imageIdStr);
-            final PhotoRecord foundImage = ofy().load().key(Key.create(PhotoRecord.class, imageId)).now();
+            String userIdStr = request.getParameter("id");
+            final long userId = Long.parseLong(userIdStr);
+            final UserRecord foundUser = ofy().load().key(Key.create(UserRecord.class, userId)).now();
 
-            if (foundImage != null) {
+            if (foundUser != null) {
                 response.setContentType("application/json");
                 PrintWriter out = response.getWriter();
                 Gson gson = new GsonBuilder().create();
-                gson.toJson(foundImage, out);
+                gson.toJson(foundUser, out);
                 out.flush();
                 out.close();
             } else {
-            // return not found
+                // return not found
                 response.setStatus(HttpStatusCodes.STATUS_CODE_NOT_FOUND);
             }
         } else {

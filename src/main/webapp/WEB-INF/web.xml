@@ -97,8 +97,26 @@
         <servlet-name>NotifyTest</servlet-name>
         <servlet-class>com.eweware.phototoss.api.NotifyTest</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>ImageAuthorImage</servlet-name>
+        <servlet-class>com.eweware.phototoss.api.ImageAuthorImage</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>UserInfo</servlet-name>
+        <servlet-class>com.eweware.phototoss.api.UserInfo</servlet-class>
+    </servlet>
 
     <!-- server mappings - API -->
+
+    <servlet-mapping>
+        <servlet-name>UserInfo</servlet-name>
+        <url-pattern>/api/user/info</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>ImageAuthorImage</servlet-name>
+        <url-pattern>/api/image/authorimage</url-pattern>
+    </servlet-mapping>
 
     <servlet-mapping>
         <servlet-name>NotifyTest</servlet-name>

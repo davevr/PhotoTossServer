@@ -14,16 +14,13 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.List;
 
 import static com.googlecode.objectify.ObjectifyService.ofy;
 
 /**
- * Created by ultradad on 1/21/15.
+ * Created by ultradad on 2/24/15.
  */
-public class GetImage extends HttpServlet {
-
-
+public class ImageAuthorImage extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession();
 
@@ -33,16 +30,15 @@ public class GetImage extends HttpServlet {
             String imageIdStr = request.getParameter("id");
             final long imageId = Long.parseLong(imageIdStr);
             final PhotoRecord foundImage = ofy().load().key(Key.create(PhotoRecord.class, imageId)).now();
+            final UserRecord imageOwner =ofy().load().key(Key.create(UserRecord.class, foundImage.ownerid)).now();
 
             if (foundImage != null) {
-                response.setContentType("application/json");
                 PrintWriter out = response.getWriter();
-                Gson gson = new GsonBuilder().create();
-                gson.toJson(foundImage, out);
+                out.write(imageOwner.imageurl);
                 out.flush();
                 out.close();
             } else {
-            // return not found
+                // return not found
                 response.setStatus(HttpStatusCodes.STATUS_CODE_NOT_FOUND);
             }
         } else {

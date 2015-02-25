@@ -119,6 +119,7 @@ public class CatchToss extends HttpServlet {
                         newImage.createdlong = sharedImage.createdlong;
                         newImage.imageUrl = sharedImage.imageUrl;
                         newImage.thumbnailurl = sharedImage.thumbnailurl;
+                        newImage.tags = sharedImage.tags;
 
                         // copied on toss
                         if (sharedImage.originid != null)
