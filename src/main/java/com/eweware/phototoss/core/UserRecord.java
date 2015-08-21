@@ -16,6 +16,7 @@ public class UserRecord {
     @Id public Long id;
 
     public String username;
+    public String nickname;
     @Unindex public transient String passwordhash;
     @Unindex public transient String passwordsalt;
     @Unindex public Date creationDate;

@@ -67,7 +67,6 @@ public class UserImage extends HttpServlet {
                 // get an image server URL
                 ImagesService imagesService = ImagesServiceFactory.getImagesService();
                 ServingUrlOptions servingOptions = ServingUrlOptions.Builder.withBlobKey(blobKeys.get(0));
-
                 String servingUrl = imagesService.getServingUrl(servingOptions);
 
                  curUser.imageurl = servingUrl;

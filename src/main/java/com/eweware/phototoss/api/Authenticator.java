@@ -1,5 +1,7 @@
 package com.eweware.phototoss.api;
 
+import com.eweware.phototoss.core.FacebookImageRecord;
+import com.eweware.phototoss.core.FacebookUser;
 import com.eweware.phototoss.core.UserRecord;
 
 import javax.servlet.http.HttpServlet;
@@ -12,13 +14,20 @@ import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.security.AlgorithmParameters;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Arrays;
 import java.util.Date;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import com.googlecode.objectify.Key;
 import org.apache.commons.codec.binary.Base64;
@@ -39,6 +48,9 @@ public  class Authenticator {
             (byte) 0xde, (byte) 0x33, (byte) 0x10, (byte) 0x12,
             (byte) 0xde, (byte) 0x33, (byte) 0x10, (byte) 0x12,
     };
+
+    private static final String FBAppId = "439651239569547";
+    private static final String FBSecret = "2671cc74281c6e342fef53467a7f7205";
 
 
 
@@ -100,6 +112,78 @@ public  class Authenticator {
             return false;
         }
     }
+
+    public static Boolean AuthenticateFBUser(HttpSession session, String fbId, String authToken)
+    {
+        if (UserIsLoggedIn(session)) {
+            Logout(session);
+        }
+
+        try {
+            // first, verify that the app token is good.
+            String baseURL = "https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token";
+            baseURL += "&client_id=" + FBAppId;
+            baseURL += "&client_secret=" + FBSecret;
+            baseURL += "&fb_exchange_token=" + authToken;
+
+            URL url = new URL(baseURL);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream()));
+            String line, resultStr = "";
+
+            while ((line = reader.readLine()) != null) {
+                resultStr += line;
+            }
+            reader.close();
+            String accessToken = resultStr.substring(resultStr.indexOf('=') + 1, resultStr.indexOf('&'));
+            baseURL = "https://graph.facebook.com/me?";
+            baseURL += "access_token=" + accessToken;
+            baseURL += "&fields=name,id";
+            url = new URL(baseURL);
+            reader = new BufferedReader(new InputStreamReader(url.openStream()));
+            resultStr = "";
+
+            while ((line = reader.readLine()) != null) {
+                resultStr += line;
+            }
+            reader.close();
+            Gson gson = new GsonBuilder().create();
+            FacebookUser fbUser = gson.fromJson(resultStr, FacebookUser.class);
+            if (!fbUser.id.equals(fbId)) {
+                // the ids do not match - bad!!
+                return false;
+            }
+
+            // then, see if the user exists and create it if it doesn't
+            UserRecord newUser = ofy().load().type(UserRecord.class).filter("username =", fbId).first().now();
+            if (newUser == null) {
+                // create user
+                newUser = new UserRecord();
+                newUser.username = fbId;
+                newUser.nickname = fbUser.name;
+                newUser.signedOn = true;
+                newUser.lastActiveDate = new Date();
+                newUser.creationDate = new Date();
+
+
+                ofy().save().entity(newUser).now();
+                session.setAttribute(USERID, newUser.id);
+            } else {
+                // now set up the session and go
+                session.setAttribute(USERID, newUser.id);
+                newUser.signedOn = true;
+                newUser.lastActiveDate = new Date();
+                ofy().save().entity(newUser);
+            }
+            return true;
+        }
+        catch (Exception exp)
+        {
+            return false;
+        }
+
+    }
+
+
 
     public static UserRecord CreateAndAuthenticateUser(HttpSession session, String username, String password)  throws Exception {
         if (UserIsLoggedIn(session)) {
