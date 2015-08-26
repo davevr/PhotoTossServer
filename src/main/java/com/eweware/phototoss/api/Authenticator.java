@@ -4,6 +4,7 @@ import com.eweware.phototoss.core.FacebookImageRecord;
 import com.eweware.phototoss.core.FacebookUser;
 import com.eweware.phototoss.core.UserRecord;
 
+import javax.crypto.Mac;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -20,6 +21,7 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.security.AlgorithmParameters;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -31,6 +33,7 @@ import com.google.gson.GsonBuilder;
 
 import com.googlecode.objectify.Key;
 import org.apache.commons.codec.binary.Base64;
+import sun.plugin2.message.Message;
 
 
 import static com.googlecode.objectify.ObjectifyService.ofy;
@@ -135,9 +138,13 @@ public  class Authenticator {
             }
             reader.close();
             String accessToken = resultStr.substring(resultStr.indexOf('=') + 1, resultStr.indexOf('&'));
+            String serverProof = hmacSHA256(accessToken, FBSecret);
+
             baseURL = "https://graph.facebook.com/me?";
             baseURL += "access_token=" + accessToken;
             baseURL += "&fields=name,id";
+            baseURL += "&client_id=" + FBAppId;
+            baseURL += "&appsecret_proof=" + serverProof;
             url = new URL(baseURL);
             reader = new BufferedReader(new InputStreamReader(url.openStream()));
             resultStr = "";
@@ -183,6 +190,34 @@ public  class Authenticator {
 
     }
 
+    private static String hmacSHA256(String accessToken, String appSecret) throws Exception {
+        try {
+            byte[] key = appSecret.getBytes(Charset.forName("UTF-8"));
+            SecretKeySpec signingKey = new SecretKeySpec(key, "HmacSHA256");
+            Mac mac = Mac.getInstance("HmacSHA256");
+            mac.init(signingKey);
+            byte[] raw = mac.doFinal(accessToken.getBytes());
+            byte[] hex = encodeHex(raw);
+            return new String(hex, "UTF-8");
+        } catch (Exception e) {
+            throw new IllegalStateException("Creation of appsecret_proof has failed", e);
+        }
+    }
+
+    public static byte[] encodeHex(final byte[] data) {
+        if (data == null)
+            throw new NullPointerException("Parameter 'data' cannot be null.");
+
+        final char[] toDigits = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };
+        final int l = data.length;
+        final char[] out = new char[l << 1];
+        for (int i = 0, j = 0; i < l; i++) {
+            out[j++] = toDigits[(0xF0 & data[i]) >>> 4];
+            out[j++] = toDigits[0x0F & data[i]];
+        }
+
+        return new String(out).getBytes(Charset.forName("UTF-8"));
+    }
 
 
     public static UserRecord CreateAndAuthenticateUser(HttpSession session, String username, String password)  throws Exception {

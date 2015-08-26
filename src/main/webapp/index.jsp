@@ -12,12 +12,9 @@
   </head>
   <body>
 <h1>Hello, world!</h1>
-  Test <a href="/uploadTest">Uploading a File!</a>
-  <p>
-    Sign in: <a href="/signintest">Sign in!</a>
-  </p>
+
 <p>
-  Create test: <a href="/createtest">Create an account!</a>
+  Welcome to PhotoToss!
 </p>
   </body>
 </html>
