@@ -22,9 +22,12 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.appengine.repackaged.com.google.api.client.http.HttpStatusCodes;
+import com.google.apphosting.api.ApiProxy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import java.util.ArrayList;
+import java.util.logging.Logger;
+import java.util.logging.Level;
 
 import com.eweware.phototoss.core.PhotoRecord;
 import com.googlecode.objectify.Key;
@@ -36,6 +39,7 @@ import static com.googlecode.objectify.ObjectifyService.ofy;
  * Created by Dave on 1/19/2015.
  */
 public class UploadImage extends HttpServlet {
+    private static final Logger log = Logger.getLogger(UploadImage.class.getName());
     private BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
 
 
@@ -50,6 +54,7 @@ public class UploadImage extends HttpServlet {
             out.flush();
             out.close();
         } else {
+            log.log(Level.WARNING, "Failed to authenticate user");
             response.setStatus(HttpStatusCodes.STATUS_CODE_FORBIDDEN);
         }
     }
@@ -69,6 +74,7 @@ public class UploadImage extends HttpServlet {
             List<BlobKey> blobKeys = blobs.get("file");
 
             if (blobKeys == null || blobKeys.isEmpty()) {
+                log.log(Level.WARNING, "Failed to find image data");
                 response.setStatus(HttpServletResponse.SC_NOT_FOUND);
             }
             else {
@@ -83,17 +89,16 @@ public class UploadImage extends HttpServlet {
                     String latStr = request.getParameter("lat");
 
                     if ((longStr == null) || (latStr == null)) {
+                        log.log(Level.WARNING, "no location data in request");
                         response.setStatus(400);
                         return;
                     }
                     double longitude = Double.parseDouble(longStr);
                     double latitude = Double.parseDouble(latStr);
-                    String captionStr = request.getParameter("caption");
-                    ArrayList<String>   tags = new ArrayList<String>();
-                    tags.add(request.getParameter("tags"));
+
 
                     // get an image server URL
-                    PhotoRecord newRec = saveMainImage(curUser, servingUrl, captionStr, tags, latitude, longitude);
+                    PhotoRecord newRec = saveMainImage(curUser, servingUrl, latitude, longitude);
 
                     // write it to the user
                     response.setContentType("application/json");
@@ -118,6 +123,7 @@ public class UploadImage extends HttpServlet {
             }
         }
         else {
+            log.log(Level.WARNING, "Failed to authenticate user");
             response.setStatus(HttpStatusCodes.STATUS_CODE_UNAUTHORIZED);
         }
     }
@@ -129,14 +135,12 @@ public class UploadImage extends HttpServlet {
     }
 
 
-    private PhotoRecord saveMainImage(UserRecord curUser, String servingURL, String caption, ArrayList<String> tags, double latitude, double longitude) {
+    private PhotoRecord saveMainImage(UserRecord curUser, String servingURL, double latitude, double longitude) {
         PhotoRecord data = new PhotoRecord();
         data.ownerid = curUser.id;
         data.ownername = curUser.username;
         data.imageUrl = servingURL;
         data.thumbnailurl = servingURL;
-        data.caption = caption;
-        data.tags = tags;
         data.created = new Date();
         data.createdlong = longitude;
         data.createdlat = latitude;

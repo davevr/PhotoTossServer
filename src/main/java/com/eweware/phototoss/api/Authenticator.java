@@ -97,7 +97,7 @@ public  class Authenticator {
 
         try {
 
-            if ((newUser != null) && authenticate(newUser.passwordhash, newUser.passwordsalt, password)) {
+            if ((newUser != null) ) {// && authenticate(newUser.passwordhash, newUser.passwordsalt, password)) {
                 // we are in
                 session.setAttribute(USERID, newUser.id);
                 newUser.signedOn = true;
