@@ -15,6 +15,7 @@ public class TossRecord {
     @Id
     public Long id;
     public Long ownerId;
+    public String ownerName;
     public Long imageId;
     public int gameType;
     public Long catchCount;

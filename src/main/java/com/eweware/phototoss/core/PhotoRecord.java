@@ -37,6 +37,7 @@ public class PhotoRecord {
     public double receivedlong;  // the long this image was caught at
     public Date received ;  // the date this image was caught
     public Long tosserid;  // the id of the person who tossed this image
+    public String tossername; // the name of the person who tossed this image
 
     // updated on an image after toss
     public Date lastshared ;

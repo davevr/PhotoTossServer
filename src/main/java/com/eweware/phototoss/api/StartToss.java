@@ -34,9 +34,9 @@ public class StartToss extends HttpServlet {
         double longitude = 0.0;
         double latitude = 0.0;
 
-        long userId = Authenticator.CurrentUserId(session);
+        UserRecord user = Authenticator.CurrentUser(session);
 
-        if (userId != 0) {
+        if (user != null) {
             try {
                 // all parameters are required
                 if ((imageIdStr == null) ||
@@ -57,9 +57,10 @@ public class StartToss extends HttpServlet {
                     newToss.catchCount = 0L;
                     newToss.gameType = gameType;
                     newToss.imageId = imageId;
-                    newToss.ownerId = userId;
+                    newToss.ownerId = user.id;
                     newToss.shareLat = latitude;
                     newToss.shareLong = longitude;
+                    newToss.ownerName = user.username;
                     newToss.shareTime = new Date();
 
                     ofy().save().entity(newToss).now();
