@@ -24,6 +24,7 @@ import static com.googlecode.objectify.ObjectifyService.ofy;
  */
 public class ImageTosses extends HttpServlet {
     private static final Logger log = Logger.getLogger(ImageTosses.class.getName());
+
     /*
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
@@ -37,6 +38,9 @@ public class ImageTosses extends HttpServlet {
 
         if (userId != 0) {
             String imageIdStr = request.getParameter("imageid");
+            if (imageIdStr == null) {
+                log.severe("missing imageid parameter");
+            }
             final long imageId = Long.parseLong(imageIdStr);
             final PhotoRecord foundImage = ofy().load().key(Key.create(PhotoRecord.class, imageId)).now();
 
