@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
 
 import static com.googlecode.objectify.ObjectifyService.ofy;
 
@@ -25,7 +26,7 @@ import static com.googlecode.objectify.ObjectifyService.ofy;
  * Created by Dave on 1/28/2015.
  */
 public class StatsProcessor extends HttpServlet {
-
+    private static final Logger log = Logger.getLogger(StatsProcessor.class.getName());
     // questionable procedure here...
     Map<String, Integer> imageIncMap = new HashMap<String, Integer>();
     Map<String, Integer> tossIncMap = new HashMap<String, Integer>();

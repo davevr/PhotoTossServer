@@ -135,6 +135,7 @@ public class CatchToss extends HttpServlet {
                         newImage.received = new Date();
                         newImage.tosserid = tossRec.ownerId;
                         newImage.tossername = tossRec.ownerName;
+                        newImage.tossid = tossRec.id;
 
                         // updated on tossed image
                         //sharedImage.totalshares++;

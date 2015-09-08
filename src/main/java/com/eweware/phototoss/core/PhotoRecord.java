@@ -38,6 +38,7 @@ public class PhotoRecord {
     public Date received ;  // the date this image was caught
     public Long tosserid;  // the id of the person who tossed this image
     public String tossername; // the name of the person who tossed this image
+    public Long tossid; // the id of the toss record - used to track tosses up the chain
 
     // updated on an image after toss
     public Date lastshared ;

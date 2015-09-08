@@ -13,6 +13,7 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Date;
+import java.util.logging.Logger;
 
 import com.eweware.phototoss.core.*;
 import com.googlecode.objectify.Key;
@@ -24,6 +25,7 @@ import static com.googlecode.objectify.ObjectifyService.ofy;
  * Created by ultradad on 1/21/15.
  */
 public class StartToss extends HttpServlet {
+    private static final Logger log = Logger.getLogger(StartToss.class.getName());
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession(true);
         String imageIdStr = request.getParameter("image");

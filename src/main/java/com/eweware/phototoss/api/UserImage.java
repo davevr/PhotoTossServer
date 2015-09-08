@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import static com.googlecode.objectify.ObjectifyService.ofy;
 
@@ -28,6 +29,7 @@ import static com.googlecode.objectify.ObjectifyService.ofy;
  * Created by ultradad on 1/28/15.
  */
 public class UserImage extends HttpServlet {
+    private static final Logger log = Logger.getLogger(UserImage.class.getName());
     private BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
 
 

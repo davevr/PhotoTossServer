@@ -15,6 +15,7 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
+import java.util.logging.Logger;
 
 import static com.googlecode.objectify.ObjectifyService.ofy;
 
@@ -22,7 +23,7 @@ import static com.googlecode.objectify.ObjectifyService.ofy;
  * Created by ultradad on 1/21/15.
  */
 public class GetImage extends HttpServlet {
-
+    private static final Logger log = Logger.getLogger(GetImage.class.getName());
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession();

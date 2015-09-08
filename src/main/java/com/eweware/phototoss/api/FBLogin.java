@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.logging.Logger;
 
 import static com.googlecode.objectify.ObjectifyService.ofy;
 
@@ -20,6 +21,7 @@ import static com.googlecode.objectify.ObjectifyService.ofy;
  * Created by ultradad on 8/21/15.
  */
 public class FBLogin extends HttpServlet {
+    private static final Logger log = Logger.getLogger(FBLogin.class.getName());
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession(true);
         String fbId = request.getParameter("id");

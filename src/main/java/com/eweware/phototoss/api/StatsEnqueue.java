@@ -10,11 +10,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.logging.Logger;
 
 /**
  * Created by Dave on 1/29/2015.
  */
 public class StatsEnqueue extends HttpServlet {
+    private static final Logger log = Logger.getLogger(StatsEnqueue.class.getName());
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // Add the task to the default queue.
         Queue queue = QueueFactory.getDefaultQueue();

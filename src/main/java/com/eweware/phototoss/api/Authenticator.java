@@ -28,6 +28,8 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.logging.Logger;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -42,6 +44,7 @@ import static com.googlecode.objectify.ObjectifyService.ofy;
  * Created by ultradad on 1/21/15.
  */
 public  class Authenticator {
+    private static final Logger log = Logger.getLogger(Authenticator.class.getName());
     private static Authenticator instance = null;
     public static final String USERID = "userid";
     private final static int ITERATIONS = 1000;

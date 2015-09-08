@@ -144,6 +144,7 @@ public class UploadImage extends HttpServlet {
         data.created = new Date();
         data.createdlong = longitude;
         data.createdlat = latitude;
+        data.tossid = 0L;
 
         // save to store
         ofy().save().entity(data).now();

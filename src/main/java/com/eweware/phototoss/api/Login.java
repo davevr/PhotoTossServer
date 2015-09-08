@@ -5,6 +5,7 @@ import com.google.appengine.repackaged.com.google.api.client.http.HttpStatusCode
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.googlecode.objectify.Key;
+import sun.rmi.runtime.Log;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -13,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.logging.Logger;
 
 import static com.googlecode.objectify.ObjectifyService.ofy;
 
@@ -20,6 +22,7 @@ import static com.googlecode.objectify.ObjectifyService.ofy;
  * Created by ultradad on 1/21/15.
  */
 public class Login extends HttpServlet {
+    private static final Logger log = Logger.getLogger(Login.class.getName());
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         HttpSession session = request.getSession(true);

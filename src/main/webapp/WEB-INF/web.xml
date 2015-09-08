@@ -110,12 +110,39 @@
         <servlet-name>FBLogin</servlet-name>
         <servlet-class>com.eweware.phototoss.api.FBLogin</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>ImageLineage</servlet-name>
+        <servlet-class>com.eweware.phototoss.api.ImageLineage</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ImageTosses</servlet-name>
+        <servlet-class>com.eweware.phototoss.api.ImageTosses</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>TossCatches</servlet-name>
+        <servlet-class>com.eweware.phototoss.api.TossCatches</servlet-class>
+    </servlet>
 
     <!-- server mappings - API -->
 
     <servlet-mapping>
         <servlet-name>UserInfo</servlet-name>
         <url-pattern>/api/user/info</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>TossCatches</servlet-name>
+        <url-pattern>/api/toss/catches</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>ImageLineage</servlet-name>
+        <url-pattern>/api/image/lineage</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>ImageTosses</servlet-name>
+        <url-pattern>/api/image/tosses</url-pattern>
     </servlet-mapping>
 
     <servlet-mapping>

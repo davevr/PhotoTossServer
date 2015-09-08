@@ -18,13 +18,14 @@ import java.util.Iterator;
 import java.util.Set;
 import java.net.URL;
 import java.net.HttpURLConnection;
+import java.util.logging.Logger;
 
 
 /**
  * Created by Dave on 2/7/2015.
  */
 public class NotifyTest extends HttpServlet {
-
+    private static final Logger log = Logger.getLogger(NotifyTest.class.getName());
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String keyStr = request.getParameter("key");
         String titleStr = request.getParameter("title");
