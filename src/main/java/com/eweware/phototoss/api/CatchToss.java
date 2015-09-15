@@ -33,7 +33,7 @@ import static com.googlecode.objectify.ObjectifyService.ofy;
  */
 public class CatchToss extends HttpServlet {
     private BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
-    private static long MAX_TOSS_TIME_IN_SECONDS = 3600; // 120;  todo - should be 120 for prod
+    public static long MAX_TOSS_TIME_IN_SECONDS = 3600; // 120;  todo - should be 120 for prod
 
 
 
