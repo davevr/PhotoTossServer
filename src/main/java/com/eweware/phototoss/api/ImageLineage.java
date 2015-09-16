@@ -44,16 +44,7 @@ public class ImageLineage extends HttpServlet {
 
             if (foundImage != null) {
                 // find the tooss
-                List<PhotoRecord> photos = new ArrayList<PhotoRecord>();
-
-                while ((foundImage.parentid != null) && (foundImage.parentid > 0L))
-                {
-                    foundImage = getParent(foundImage);
-                    if (foundImage == null)
-                        break;
-                    else
-                        photos.add(foundImage);
-                }
+                List<PhotoRecord> photos = GetImageLineage(foundImage);
                 response.setContentType("application/json");
                 PrintWriter out = response.getWriter();
                 Gson gson = new GsonBuilder().create();
@@ -73,7 +64,23 @@ public class ImageLineage extends HttpServlet {
         }
     }
 
-    protected PhotoRecord getParent(PhotoRecord thePhoto) {
+    public static List<PhotoRecord> GetImageLineage(PhotoRecord foundImage) {
+        List<PhotoRecord> photos = new ArrayList<PhotoRecord>();
+
+        while ((foundImage.parentid != null) && (foundImage.parentid > 0L))
+        {
+            foundImage = getParent(foundImage);
+            if (foundImage == null)
+                break;
+            else
+                photos.add(foundImage);
+        }
+
+        return photos;
+
+    }
+
+    protected static PhotoRecord getParent(PhotoRecord thePhoto) {
         final long parentId = thePhoto.parentid;
         final PhotoRecord theParent = ofy().load().key(Key.create(PhotoRecord.class, parentId)).now();
         return theParent;

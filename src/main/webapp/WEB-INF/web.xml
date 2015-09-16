@@ -45,7 +45,20 @@
         <jsp-file>/notifytest.jsp</jsp-file>
     </servlet>
 
+    <servlet>
+        <servlet-name>tossReferencePage</servlet-name>
+        <jsp-file>/tossReference.jsp</jsp-file>
+    </servlet>
 
+    <servlet>
+        <servlet-name>imageReferencePage</servlet-name>
+        <jsp-file>/imageReference.jsp</jsp-file>
+    </servlet>
+
+    <servlet>
+        <servlet-name>userReferencePage</servlet-name>
+        <jsp-file>/userReference.jsp</jsp-file>
+    </servlet>
 
     <!-- SERVER JAVA SERVLETS -->
     <servlet>
@@ -122,8 +135,17 @@
         <servlet-name>TossCatches</servlet-name>
         <servlet-class>com.eweware.phototoss.api.TossCatches</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>TossStatus</servlet-name>
+        <servlet-class>com.eweware.phototoss.api.GetTossStatus</servlet-class>
+    </servlet>
 
     <!-- server mappings - API -->
+
+    <servlet-mapping>
+        <servlet-name>TossStatus</servlet-name>
+        <url-pattern>/api/toss/status</url-pattern>
+    </servlet-mapping>
 
     <servlet-mapping>
         <servlet-name>UserInfo</servlet-name>
@@ -229,6 +251,20 @@
         <url-pattern>/notifytest</url-pattern>
     </servlet-mapping>
 
+    <servlet-mapping>
+        <servlet-name>tossReferencePage</servlet-name>
+        <url-pattern>/toss/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>imageReferencePage</servlet-name>
+        <url-pattern>/image/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>userReferencePage</servlet-name>
+        <url-pattern>/user/*</url-pattern>
+    </servlet-mapping>
 
     <servlet-mapping>
         <servlet-name>tossTest</servlet-name>
