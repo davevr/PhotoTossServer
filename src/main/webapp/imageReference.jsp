@@ -16,19 +16,38 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<html>
-<head>
-  <title>PhotoToss Toss Page!</title>
-  <%@include file="includes/stdincludes.jsp" %>
-</head>
-<body>
-<%@include file="includes/header.jsp" %>
 <%
   String pathInfo = request.getPathInfo(); // /{value}/test
   String[] pathParts = pathInfo.split("/");
   String imageIdStr = pathParts[pathParts.length-1];
   long imageId = Long.parseLong(imageIdStr);
   PhotoRecord photoRecStatic = ofy().load().key(Key.create(PhotoRecord.class, (long) imageId)).now();
+  String imageUrl = "", ownerid="";
+  if (photoRecStatic != null) {
+      imageUrl = photoRecStatic.imageUrl;
+      ownerid = photoRecStatic.ownername;
+  }
+%>
+<html>
+<head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+    <meta property="fb:app_id" content="439651239569547" />
+    <meta property="og:type"   content="article" />
+    <meta property="og:url"    content="http://phototoss-server-01.appspot.com/image/<%=imageIdStr%>" />
+    <meta property="og:title"  content="Tossed from PhotoToss" />
+    <meta property="og:image"  content="<%=imageUrl%>" />
+    <meta property="article:author"  content="<%=ownerid%>" />
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@eweware">
+    <meta name="twitter:title" content="Tossed from PhotoToss">
+    <meta name="twitter:description" content="This image is being tossed about on PhotoToss!">
+    <meta name="twitter:image" content="<%=imageUrl%>" />
+  <title>PhotoToss Toss Page!</title>
+  <%@include file="includes/stdincludes.jsp" %>
+</head>
+<body>
+<%@include file="includes/header.jsp" %>
+<%
+
   if (photoRecStatic != null) {
 %>
 <div>This guy here</div>
