@@ -28,6 +28,7 @@
       ownerid = photoRecStatic.ownername;
   }
 %>
+<!DOCTYPE html>
 <html>
 <head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
     <meta property="fb:app_id" content="439651239569547" />

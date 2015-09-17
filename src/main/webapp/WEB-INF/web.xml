@@ -139,8 +139,17 @@
         <servlet-name>TossStatus</servlet-name>
         <servlet-class>com.eweware.phototoss.api.GetTossStatus</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>RecentActivity</servlet-name>
+        <servlet-class>com.eweware.phototoss.api.RecentActivity</servlet-class>
+    </servlet>
 
     <!-- server mappings - API -->
+
+    <servlet-mapping>
+        <servlet-name>RecentActivity</servlet-name>
+        <url-pattern>/api/recent</url-pattern>
+    </servlet-mapping>
 
     <servlet-mapping>
         <servlet-name>TossStatus</servlet-name>
