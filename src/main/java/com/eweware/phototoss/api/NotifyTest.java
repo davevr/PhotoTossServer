@@ -36,10 +36,10 @@ public class NotifyTest extends HttpServlet {
             Set<String> tags = new HashSet<String>();
             tags.add(keyStr);
 
-            SendNotification(titleStr, bodyStr, tags);
+            SendNotification(titleStr, bodyStr, null, null, tags);
         }
         else
-            SendNotification(titleStr, bodyStr, null);
+            SendNotification(titleStr, bodyStr, null, null, null);
 
         PrintWriter out = response.getWriter();
         out.write("ok");
@@ -53,7 +53,13 @@ public class NotifyTest extends HttpServlet {
     }
 
 
-    private void SendNotification(String titleStr, String bodyStr, Set<String> tagMap) throws ServletException, IOException {
+    public static String SendNotification(String titleStr, String bodyStr, String imageId, String imageURL, Set<String> tagMap) throws IOException {
+        SendGCMNotification(titleStr, bodyStr, imageId, imageURL, tagMap);
+        SendAppleNotification(titleStr, bodyStr, imageId, imageURL, tagMap);
+        return null;
+    }
+
+        public static String SendGCMNotification(String titleStr, String bodyStr, String imageId, String imageURL, Set<String> tagMap) throws IOException {
         String url = "https://phototossnotify-ns.servicebus.windows.net/phototossnotify/messages/?api-version=2013-08";
         URL obj = new URL(url);
         HttpURLConnection con = (HttpURLConnection) obj.openConnection();
@@ -76,7 +82,16 @@ public class NotifyTest extends HttpServlet {
         }
 
         // Send post request
-        String message = "{\"data\":{\"title\":\"" + titleStr + "\", \"body\":\"" + bodyStr + "\"}}";
+        String message = "{\"data\":{\"title\":\"" + titleStr + "\", \"body\":\"" + bodyStr + "\"";
+
+        if (imageId != null) {
+            message += ", \"imageid\":\"" + imageId + "\"";
+        }
+
+        if (imageURL != null) {
+            message += ", \"image\":\"" + imageURL + "\"";
+        }
+        message += "}}";
 
         con.setDoInput(true);
         con.setDoOutput(true);
@@ -99,9 +114,70 @@ public class NotifyTest extends HttpServlet {
 
         //print result
         String theResult = notifyresponse.toString();
+
+        return theResult;
     }
 
-    private String generateSasToken(String uri) {
+    public static String SendAppleNotification(String titleStr, String bodyStr, String imageId, String imageURL, Set<String> tagMap) throws IOException {
+        String url = "https://phototossnotify-ns.servicebus.windows.net/phototossnotify/messages/?api-version=2013-08";
+        URL obj = new URL(url);
+        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+
+        //add request header
+        con.setRequestMethod("POST");
+        con.setRequestProperty("Content-Type","application/json;charset=utf-8");
+        con.setRequestProperty("Authorization", generateSasToken(url));
+        con.setRequestProperty("ServiceBusNotification-Format", "apple");
+
+        if (tagMap != null) {
+            StringBuffer exp = new StringBuffer();
+            for (Iterator<String> iterator = tagMap.iterator(); iterator.hasNext();) {
+                exp.append(iterator.next());
+                if (iterator.hasNext())
+                    exp.append(" || ");
+            }
+            con.setRequestProperty("ServiceBusNotification-Tags", exp.toString());
+
+        }
+
+        // Send post request
+        String message = "{\"aps\":{\"alert\":\"" + titleStr + "\", \"title\":\"" + titleStr + "\", \"body\":\"" + bodyStr + "\"";
+
+        if (imageId != null) {
+            message += ", \"imageid\":\"" + imageId + "\"";
+        }
+
+        if (imageURL != null) {
+            message += ", \"image\":\"" + imageURL + "\"";
+        }
+        message += "}}";
+
+        con.setDoInput(true);
+        con.setDoOutput(true);
+        byte[] outputInBytes = message.getBytes("UTF-8");
+        OutputStream os = con.getOutputStream();
+        os.write(outputInBytes );
+        os.close();
+
+        int responseCode = con.getResponseCode();
+
+        BufferedReader in = new BufferedReader(
+                new InputStreamReader(con.getInputStream()));
+        String inputLine;
+        StringBuffer notifyresponse = new StringBuffer();
+
+        while ((inputLine = in.readLine()) != null) {
+            notifyresponse.append(inputLine);
+        }
+        in.close();
+
+        //print result
+        String theResult = notifyresponse.toString();
+
+        return theResult;
+    }
+
+    private static String generateSasToken(String uri) {
         String targetUri;
         String SasKeyValue = "9aJhh1pJMXAerRYCv6Kk1feyNHsn+g584gr7xX1N6xI=";
         String SasKeyName = "DefaultFullSharedAccessSignature";

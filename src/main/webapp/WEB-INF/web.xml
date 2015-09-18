@@ -144,7 +144,16 @@
         <servlet-class>com.eweware.phototoss.api.RecentActivity</servlet-class>
     </servlet>
 
+    <servlet>
+        <servlet-name>_ah_sessioncleanup</servlet-name>
+        <servlet-class>com.google.apphosting.utils.servlet.SessionCleanupServlet</servlet-class>
+    </servlet>
+
     <!-- server mappings - API -->
+    <servlet-mapping>
+        <servlet-name>_ah_sessioncleanup</servlet-name>
+        <url-pattern>/_ah/sessioncleanup</url-pattern>
+    </servlet-mapping>
 
     <servlet-mapping>
         <servlet-name>RecentActivity</servlet-name>
@@ -319,5 +328,7 @@
         <filter-name>ObjectifyFilter</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
+
+
 
 </web-app>

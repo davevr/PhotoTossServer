@@ -152,7 +152,7 @@ public class CatchToss extends HttpServlet {
                     }
                 });
 
-
+                NotifyParentsOfToss(data);
                 // write it to the user
                 response.setContentType("application/json");
                 PrintWriter out = response.getWriter();
@@ -160,11 +160,28 @@ public class CatchToss extends HttpServlet {
                 gson.toJson(data, out);
                 out.flush();
                 out.close();
+
             }
         }
         else {
             response.setStatus(HttpStatusCodes.STATUS_CODE_UNAUTHORIZED);
         }
+    }
+
+    private void NotifyParentsOfToss(PhotoRecord thePhoto) throws IOException {
+        List<PhotoRecord> parentImages = ImageLineage.GetImageLineage(thePhoto);
+        Set<String> keyMap = new HashSet<String>();
+
+        for (PhotoRecord curParent : parentImages) {
+            keyMap.add("user_" + curParent.ownerid.toString());
+        }
+
+        String imageId = thePhoto.originid.toString();
+        String imageUrl = thePhoto.imageUrl + "=s256-c";
+        String titleStr = "Your Photo was tossed!";
+        String contentStr = "Check the map for details...";
+
+        NotifyTest.SendNotification(titleStr, contentStr, imageId, imageUrl, keyMap);
     }
 
 
