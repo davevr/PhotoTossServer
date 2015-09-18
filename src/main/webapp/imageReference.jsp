@@ -31,6 +31,12 @@
 <!DOCTYPE html>
 <html>
 <head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+    <meta name="apple-itunes-app" content="app-id=890164360, app-argument=http://phototoss-server-01.appspot.com/image/<%=imageIdStr%>">
+    <meta name="google-play-app" content="app-id=com.eweware.heard">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/jquery.smartbanner.css" type="text/css" media="screen">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+    <meta name="author" content="eweware, inc.">
     <meta property="fb:app_id" content="439651239569547" />
     <meta property="og:type"   content="article" />
     <meta property="og:url"    content="http://phototoss-server-01.appspot.com/image/<%=imageIdStr%>" />
@@ -46,6 +52,10 @@
   <%@include file="includes/stdincludes.jsp" %>
 </head>
 <body>
+<script src="includes/jquery.smartbanner.js"></script>
+<script type="text/javascript">
+    $(function() { $.smartbanner() } )
+</script>
 <%@include file="includes/header.jsp" %>
 <%
 

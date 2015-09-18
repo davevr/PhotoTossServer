@@ -152,7 +152,7 @@ public class CatchToss extends HttpServlet {
                     }
                 });
 
-                NotifyParentsOfToss(data);
+                NotifyParentsOfToss(sharedImage);
                 // write it to the user
                 response.setContentType("application/json");
                 PrintWriter out = response.getWriter();
@@ -170,18 +170,21 @@ public class CatchToss extends HttpServlet {
 
     private void NotifyParentsOfToss(PhotoRecord thePhoto) throws IOException {
         List<PhotoRecord> parentImages = ImageLineage.GetImageLineage(thePhoto);
-        Set<String> keyMap = new HashSet<String>();
 
-        for (PhotoRecord curParent : parentImages) {
-            keyMap.add("user_" + curParent.ownerid.toString());
+        if (parentImages != null && parentImages.size() > 0) {
+            Set<String> keyMap = new HashSet<String>();
+
+            for (PhotoRecord curParent : parentImages) {
+                keyMap.add("user_" + curParent.ownerid.toString());
+            }
+
+            String imageId = thePhoto.originid.toString();
+            String imageUrl = thePhoto.imageUrl + "=s256-c";
+            String titleStr = "Your photo was tossed!";
+            String contentStr = "Check the map for details...";
+
+            NotifyTest.SendNotification(titleStr, contentStr, imageId, imageUrl, keyMap);
         }
-
-        String imageId = thePhoto.originid.toString();
-        String imageUrl = thePhoto.imageUrl + "=s256-c";
-        String titleStr = "Your Photo was tossed!";
-        String contentStr = "Check the map for details...";
-
-        NotifyTest.SendNotification(titleStr, contentStr, imageId, imageUrl, keyMap);
     }
 
 

@@ -5,8 +5,16 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-  <title>PhotoToss Home</title>
+  <title>PhotoToss</title>
   <%@include file="includes/stdincludes.jsp" %>
+    <meta name="apple-itunes-app" content="app-id=890164360">
+    <meta name="author" content="eweware, inc.">
+    <meta name="google-play-app" content="app-id=com.eweware.heard">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="css/jquery.smartbanner.css" type="text/css" media="screen">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+
 </head>
 <body>
 <script type="text/javascript">
@@ -80,6 +88,10 @@
 </script>
 <script async defer
         src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCcjZQSZ_8LhmK7jsUQ-atqGoFrnXtpYq4&callback=initMap">
+</script>
+<script src="includes/jquery.smartbanner.js"></script>
+<script type="text/javascript">
+    $(function() { $.smartbanner() } )
 </script>
 
 

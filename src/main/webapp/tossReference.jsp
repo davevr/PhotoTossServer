@@ -14,19 +14,23 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<html>
-<head>
-    <title>PhotoToss Toss Page!</title>
-    <%@include file="includes/stdincludes.jsp" %>
-</head>
-<body>
-<%@include file="includes/header.jsp" %>
 <%
     String pathInfo = request.getPathInfo(); // /{value}/test
     String[] pathParts = pathInfo.split("/");
     String tossIdStr = pathParts[pathParts.length-1];
     long tossId = Long.parseLong(tossIdStr);
     TossRecord tossRecStatic = ofy().load().key(Key.create(TossRecord.class, (long) tossId)).now();
+%>
+
+<html>
+<head>
+    <title>PhotoToss Toss Page!</title>
+    <meta name="apple-itunes-app" content="app-id=890164360, app-argument=http://phototoss-server-01.appspot.com/toss/<%=tossIdStr%>">
+    <%@include file="includes/stdincludes.jsp" %>
+</head>
+<body>
+<%@include file="includes/header.jsp" %>
+<%
     if (tossRecStatic != null) {
         PhotoRecord photoRecStatic = ofy().load().key(Key.create(PhotoRecord.class, (long) tossRecStatic.imageId)).now();
         final Date currentTime = new Date();
