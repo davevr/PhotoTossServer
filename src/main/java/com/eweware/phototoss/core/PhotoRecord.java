@@ -44,9 +44,11 @@ public class PhotoRecord {
     public Date lastshared ;
     @Unindex public int tossCount ;
     @Unindex public Long totalshares;
+    public Boolean deleted;
 
-
-    public PhotoRecord() {}
+    public PhotoRecord() {
+        deleted = false;
+    }
 
 
 }

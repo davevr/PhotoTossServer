@@ -29,7 +29,7 @@ public class GetUserImages extends HttpServlet {
 
         if (userId != 0) {
 
-            List < PhotoRecord > photos = ofy().load().type(PhotoRecord.class).filter("ownerid =", userId).list();
+            List < PhotoRecord > photos = ofy().load().type(PhotoRecord.class).filter("ownerid =", userId).filter("deleted", Boolean.FALSE).list();
 
             // return them as JSON
             // write it to the user

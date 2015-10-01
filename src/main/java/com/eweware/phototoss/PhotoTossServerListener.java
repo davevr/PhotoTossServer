@@ -20,7 +20,7 @@ public class PhotoTossServerListener implements ServletContextListener {
         ObjectifyService.register(UserRecord.class);
         ObjectifyService.register(TossRecord.class);
         ObjectifyService.register(CatchRecord.class);
-
+        ObjectifyService.register(ImageDeleteRecord.class);
     }
 
 

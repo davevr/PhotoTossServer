@@ -93,73 +93,73 @@ public class CatchToss extends HttpServlet {
                 Key<PhotoRecord> curObj = ofy().load().type(PhotoRecord.class).filter("ownerid =", curUser.id).filter("originid =", sharedImage.originid).keys().first().now();
 
                 if (curObj != null) {
+                    response.setContentType("text/html");
                     response.setStatus(400);
                     PrintWriter out = response.getWriter();
                     out.write("duplicate");
                     out.flush();
                     out.close();
+                } else {
+                    ImagesService imagesService = ImagesServiceFactory.getImagesService();
+                    ServingUrlOptions servingOptions = ServingUrlOptions.Builder.withBlobKey(blobKeys.get(0));
+
+                    final String servingUrl = imagesService.getServingUrl(servingOptions);
+
+                    PhotoRecord data = ofy().transact(new Work<PhotoRecord>() {
+                        public PhotoRecord run() {
+                            PhotoRecord newImage = new PhotoRecord();
+                            newImage.ownername = curUser.username;
+                            newImage.ownerid = curUser.id;
+
+                            // copy from source
+                            newImage.caption = sharedImage.caption;
+                            newImage.created = sharedImage.created;
+                            newImage.createdlat = sharedImage.createdlat;
+                            newImage.createdlong = sharedImage.createdlong;
+                            newImage.imageUrl = sharedImage.imageUrl;
+                            newImage.thumbnailurl = sharedImage.thumbnailurl;
+                            newImage.tags = sharedImage.tags;
+
+                            // copied on toss
+                            if (sharedImage.originid != null)
+                                newImage.originid = sharedImage.originid;
+                            else
+                                newImage.originid = sharedImage.id;
+
+                            newImage.parentid = sharedImage.id;
+                            newImage.catchUrl = servingUrl;
+                            newImage.receivedcaption = request.getParameter("caption");
+                            newImage.receivedlat = latitude;
+                            newImage.receivedlong = longitude;
+                            newImage.received = new Date();
+                            newImage.tosserid = tossRec.ownerId;
+                            newImage.tossername = tossRec.ownerName;
+                            newImage.tossid = tossRec.id;
+
+                            // updated on tossed image
+                            //sharedImage.totalshares++;
+
+                            // update toss record
+                            // tossRec.catchCount++;
+
+                            // save to store
+                            //ofy().save().entity(tossRec);
+                            //ofy().save().entity(sharedImage);
+                            ofy().save().entity(newImage);
+
+                            return newImage;
+                        }
+                    });
+
+                    NotifyParentsOfToss(sharedImage);
+                    // write it to the user
+                    response.setContentType("application/json");
+                    PrintWriter out = response.getWriter();
+                    Gson gson = new GsonBuilder().create();
+                    gson.toJson(data, out);
+                    out.flush();
+                    out.close();
                 }
-
-
-                ImagesService imagesService = ImagesServiceFactory.getImagesService();
-                ServingUrlOptions servingOptions = ServingUrlOptions.Builder.withBlobKey(blobKeys.get(0));
-
-                final String servingUrl = imagesService.getServingUrl(servingOptions);
-
-                PhotoRecord data = ofy().transact(new Work<PhotoRecord>() {
-                    public PhotoRecord run() {
-                        PhotoRecord newImage = new PhotoRecord();
-                        newImage.ownername = curUser.username;
-                        newImage.ownerid = curUser.id;
-
-                        // copy from source
-                        newImage.caption = sharedImage.caption;
-                        newImage.created = sharedImage.created;
-                        newImage.createdlat = sharedImage.createdlat;
-                        newImage.createdlong = sharedImage.createdlong;
-                        newImage.imageUrl = sharedImage.imageUrl;
-                        newImage.thumbnailurl = sharedImage.thumbnailurl;
-                        newImage.tags = sharedImage.tags;
-
-                        // copied on toss
-                        if (sharedImage.originid != null)
-                            newImage.originid = sharedImage.originid;
-                        else
-                            newImage.originid = sharedImage.id;
-
-                        newImage.parentid = sharedImage.id;
-                        newImage.catchUrl = servingUrl;
-                        newImage.receivedcaption = request.getParameter("caption");
-                        newImage.receivedlat = latitude;
-                        newImage.receivedlong = longitude;
-                        newImage.received = new Date();
-                        newImage.tosserid = tossRec.ownerId;
-                        newImage.tossername = tossRec.ownerName;
-                        newImage.tossid = tossRec.id;
-
-                        // updated on tossed image
-                        //sharedImage.totalshares++;
-
-                        // update toss record
-                       // tossRec.catchCount++;
-
-                        // save to store
-                        //ofy().save().entity(tossRec);
-                        //ofy().save().entity(sharedImage);
-                        ofy().save().entity(newImage);
-
-                        return newImage;
-                    }
-                });
-
-                NotifyParentsOfToss(sharedImage);
-                // write it to the user
-                response.setContentType("application/json");
-                PrintWriter out = response.getWriter();
-                Gson gson = new GsonBuilder().create();
-                gson.toJson(data, out);
-                out.flush();
-                out.close();
 
             }
         }
