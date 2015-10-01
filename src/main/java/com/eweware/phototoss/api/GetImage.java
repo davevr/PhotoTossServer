@@ -99,6 +99,60 @@ public class GetImage extends HttpServlet {
         }
     }
 
+    protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        HttpSession session = request.getSession();
+
+        final UserRecord curUser = Authenticator.CurrentUser(session);
+
+        if (curUser != null) {
+            String imageIdStr = request.getParameter("id");
+            final long imageId = Long.parseLong(imageIdStr);
+            Key<PhotoRecord>   theKey = Key.create(PhotoRecord.class, imageId);
+            final PhotoRecord foundImage = ofy().load().key(theKey).now();
+
+            if (foundImage != null) {
+                if (foundImage.ownerid == curUser.id) {
+                    Boolean didIt = false;
+                    String captionStr = request.getParameter("caption");
+
+                    if (captionStr != null) {
+                        didIt = true;
+                        foundImage.caption = captionStr;
+                    }
+
+                    if (didIt)
+                        ofy().save().entity(foundImage).now();
+                    else
+                        log.log(Level.WARNING, "Image Edit called with no valid parameters");
+
+                    response.setContentType("application/json");
+                    PrintWriter out = response.getWriter();
+                    Gson gson = new GsonBuilder().create();
+                    gson.toJson(foundImage, out);
+                    out.flush();
+                    out.close();
+
+                } else {
+                    log.log(Level.WARNING, "User not authorized to edit image");
+                    response.setStatus(HttpStatusCodes.STATUS_CODE_FORBIDDEN);
+                    response.setContentType("text/html");
+                    PrintWriter out = response.getWriter();
+                    out.println("err_edit_others_image");
+                    out.flush();
+                    out.close();
+                }
+            } else {
+                // return not found
+
+                response.setStatus(HttpStatusCodes.STATUS_CODE_NOT_FOUND);
+
+            }
+        } else {
+            // fail
+            response.setStatus(HttpStatusCodes.STATUS_CODE_FORBIDDEN);
+        }
+    }
+
     protected void DeleteChildImages(PhotoRecord theParent) {
         // delete children
         List<TossRecord> tosses = ofy().load().type(TossRecord.class).filter("imageId =", theParent.id).list();

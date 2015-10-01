@@ -84,7 +84,12 @@ public class CatchToss extends HttpServlet {
                 long elapsedSec = TimeUnit.SECONDS.convert(diffInMillies, TimeUnit.MILLISECONDS);
 
                 if (elapsedSec > MAX_TOSS_TIME_IN_SECONDS) {
+                    response.setContentType("text/html");
                     response.setStatus(400);
+                    PrintWriter out = response.getWriter();
+                    out.write("expired_toss");
+                    out.flush();
+                    out.close();
                     return;
                 }
 
@@ -96,7 +101,7 @@ public class CatchToss extends HttpServlet {
                     response.setContentType("text/html");
                     response.setStatus(400);
                     PrintWriter out = response.getWriter();
-                    out.write("duplicate");
+                    out.write("duplicate_image");
                     out.flush();
                     out.close();
                 } else {
