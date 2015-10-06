@@ -148,8 +148,36 @@
         <servlet-name>_ah_sessioncleanup</servlet-name>
         <servlet-class>com.google.apphosting.utils.servlet.SessionCleanupServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>UserStatsServlet</servlet-name>
+        <servlet-class>com.eweware.phototoss.api.UserStatsServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ImageStatsServlet</servlet-name>
+        <servlet-class>com.eweware.phototoss.api.ImageStatsServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>GlobalStatsServlet</servlet-name>
+        <servlet-class>com.eweware.phototoss.api.GlobalStatsServlet</servlet-class>
+    </servlet>
 
     <!-- server mappings - API -->
+    <servlet-mapping>
+        <servlet-name>UserStatsServlet</servlet-name>
+        <url-pattern>/api/user/stats</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>ImageStatsServlet</servlet-name>
+        <url-pattern>/api/image/stats</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>GlobalStatsServlet</servlet-name>
+        <url-pattern>/api/stats</url-pattern>
+    </servlet-mapping>
+
+
     <servlet-mapping>
         <servlet-name>_ah_sessioncleanup</servlet-name>
         <url-pattern>/_ah/sessioncleanup</url-pattern>
