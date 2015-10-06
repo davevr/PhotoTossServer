@@ -42,8 +42,8 @@ public class PhotoRecord {
 
     // updated on an image after toss
     public Date lastshared ;
-    @Unindex public int tossCount ;
-    @Unindex public Long totalshares;
+    public int tossCount ;
+    public Long totalshares;
     public Boolean deleted;
 
     public PhotoRecord() {

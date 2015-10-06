@@ -78,9 +78,9 @@ public class CatchToss extends HttpServlet {
                 final double longitude = Double.parseDouble(longStr);
                 final double latitude = Double.parseDouble(latStr);
                 final Date currentTime = new Date();
-                TossRecord tossRecStatic = ofy().load().key(Key.create(TossRecord.class, (long) tossId)).now();
+                final TossRecord tossRec = ofy().load().key(Key.create(TossRecord.class, (long) tossId)).now();
 
-                long diffInMillies = currentTime.getTime() - tossRecStatic.shareTime.getTime();
+                long diffInMillies = currentTime.getTime() - tossRec.shareTime.getTime();
                 long elapsedSec = TimeUnit.SECONDS.convert(diffInMillies, TimeUnit.MILLISECONDS);
 
                 if (elapsedSec > MAX_TOSS_TIME_IN_SECONDS) {
@@ -93,7 +93,6 @@ public class CatchToss extends HttpServlet {
                     return;
                 }
 
-                final TossRecord tossRec = ofy().load().key(Key.create(TossRecord.class, (long) tossId)).now();
                 final PhotoRecord sharedImage = ofy().load().key(Key.create(PhotoRecord.class, tossRec.imageId)).now();
                 Key<PhotoRecord> curObj = ofy().load().type(PhotoRecord.class).filter("ownerid =", curUser.id).filter("originid =", sharedImage.originid).keys().first().now();
 
@@ -141,20 +140,25 @@ public class CatchToss extends HttpServlet {
                             newImage.tossername = tossRec.ownerName;
                             newImage.tossid = tossRec.id;
 
-                            // updated on tossed image
-                            //sharedImage.totalshares++;
-
-                            // update toss record
-                            // tossRec.catchCount++;
-
-                            // save to store
-                            //ofy().save().entity(tossRec);
-                            //ofy().save().entity(sharedImage);
                             ofy().save().entity(newImage);
 
                             return newImage;
                         }
                     });
+
+                    // update stats on original image
+                    ofy().transact(new VoidWork() {
+                        public void vrun() {
+                            final PhotoRecord originalImage = ofy().load().key(Key.create(PhotoRecord.class, sharedImage.originid)).now();
+                            if (originalImage.totalshares == null)
+                                originalImage.totalshares = 1L;
+                            else
+                                originalImage.totalshares++;
+                            ofy().save().entity(originalImage);
+                        }
+                    });
+
+
 
                     NotifyParentsOfToss(sharedImage);
                     // write it to the user
