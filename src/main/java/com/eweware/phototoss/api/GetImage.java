@@ -108,10 +108,10 @@ public class GetImage extends HttpServlet {
             String imageIdStr = request.getParameter("id");
             final long imageId = Long.parseLong(imageIdStr);
             Key<PhotoRecord>   theKey = Key.create(PhotoRecord.class, imageId);
-            final PhotoRecord foundImage = ofy().load().key(theKey).now();
+            PhotoRecord foundImage = ofy().load().key(theKey).now();
 
             if (foundImage != null) {
-                if (foundImage.ownerid == curUser.id) {
+                if (foundImage.ownerid.equals(curUser.id)) {
                     Boolean didIt = false;
                     String captionStr = request.getParameter("caption");
 
@@ -120,9 +120,10 @@ public class GetImage extends HttpServlet {
                         foundImage.caption = captionStr;
                     }
 
-                    if (didIt)
+                    if (didIt) {
                         ofy().save().entity(foundImage).now();
-                    else
+
+                    } else
                         log.log(Level.WARNING, "Image Edit called with no valid parameters");
 
                     response.setContentType("application/json");
@@ -133,7 +134,8 @@ public class GetImage extends HttpServlet {
                     out.close();
 
                 } else {
-                    log.log(Level.WARNING, "User not authorized to edit image");
+                    final String logString = String.format("User %d not authorized to edit image %d", foundImage.ownerid, curUser.id);
+                    log.log(Level.WARNING, logString);
                     response.setStatus(HttpStatusCodes.STATUS_CODE_FORBIDDEN);
                     response.setContentType("text/html");
                     PrintWriter out = response.getWriter();
