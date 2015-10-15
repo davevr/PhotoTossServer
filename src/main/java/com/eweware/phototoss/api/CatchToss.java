@@ -1,5 +1,6 @@
 package com.eweware.phototoss.api;
 
+import com.eweware.phototoss.core.BarcodeLocation;
 import com.eweware.phototoss.core.PhotoRecord;
 import com.eweware.phototoss.core.TossRecord;
 import com.eweware.phototoss.core.UserRecord;
@@ -80,6 +81,7 @@ public class CatchToss extends HttpServlet {
                 final Date currentTime = new Date();
                 final TossRecord tossRec = ofy().load().key(Key.create(TossRecord.class, (long) tossId)).now();
 
+
                 long diffInMillies = currentTime.getTime() - tossRec.shareTime.getTime();
                 long elapsedSec = TimeUnit.SECONDS.convert(diffInMillies, TimeUnit.MILLISECONDS);
 
@@ -92,6 +94,7 @@ public class CatchToss extends HttpServlet {
                     out.close();
                     return;
                 }
+
 
                 final PhotoRecord sharedImage = ofy().load().key(Key.create(PhotoRecord.class, tossRec.imageId)).now();
                 Key<PhotoRecord> curObj = ofy().load().type(PhotoRecord.class).filter("ownerid =", curUser.id).filter("originid =", sharedImage.originid).keys().first().now();
@@ -108,12 +111,45 @@ public class CatchToss extends HttpServlet {
                     ServingUrlOptions servingOptions = ServingUrlOptions.Builder.withBlobKey(blobKeys.get(0));
 
                     final String servingUrl = imagesService.getServingUrl(servingOptions);
+                    final String tlxStr = request.getParameter("tlx");
+                    final String tlyStr = request.getParameter("tly");
+                    final String trxStr = request.getParameter("trx");
+                    final String tryStr = request.getParameter("try");
+                    final String blxStr = request.getParameter("blx");
+                    final String blyStr = request.getParameter("bly");
+                    final String brxStr = request.getParameter("brx");
+                    final String bryStr = request.getParameter("bry");
 
                     PhotoRecord data = ofy().transact(new Work<PhotoRecord>() {
                         public PhotoRecord run() {
                             PhotoRecord newImage = new PhotoRecord();
                             newImage.ownername = curUser.username;
                             newImage.ownerid = curUser.id;
+
+                            // maybe set coords
+                            if ((tlxStr != null) && (tlyStr != null) && (trxStr != null) && (tryStr != null) &&
+                                    (blxStr != null) && (blyStr != null) && (brxStr != null) && (bryStr != null)) {
+
+                                // set coord
+                                final float tlx = Float.parseFloat(tlxStr);
+                                final float tly = Float.parseFloat(tlyStr);
+                                final float trx = Float.parseFloat(trxStr);
+                                final float _try = Float.parseFloat(tryStr);
+                                final float blx = Float.parseFloat(blxStr);
+                                final float bly = Float.parseFloat(blyStr);
+                                final float brx = Float.parseFloat(brxStr);
+                                final float bry = Float.parseFloat(bryStr);
+                                newImage.barcodelocation = new BarcodeLocation();
+                                newImage.barcodelocation.topleft.x = tlx;
+                                newImage.barcodelocation.topleft.y = tly;
+                                newImage.barcodelocation.topright.x = trx;
+                                newImage.barcodelocation.topright.y = _try;
+
+                                newImage.barcodelocation.bottomleft.x = blx;
+                                newImage.barcodelocation.bottomleft.y = bly;
+                                newImage.barcodelocation.bottomright.x = brx;
+                                newImage.barcodelocation.bottomright.y = bry;
+                            }
 
                             // copy from source
                             newImage.created = sharedImage.created;

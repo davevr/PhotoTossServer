@@ -7,10 +7,18 @@ import com.googlecode.objectify.annotation.Entity;
  */
 
 public class BarcodeLocation {
-    public BarcodeLocation topleft;
-    public BarcodeLocation topright;
-    public BarcodeLocation bottomleft;
-    public BarcodeLocation bottomright;
+    public BarcodePoint topleft;
+    public BarcodePoint topright;
+    public BarcodePoint bottomleft;
+    public BarcodePoint bottomright;
+
+    public BarcodeLocation() {
+        topleft = new BarcodePoint();
+        topright = new BarcodePoint();
+        bottomleft = new BarcodePoint();
+        bottomright = new BarcodePoint();
+
+    }
 }
 
 
