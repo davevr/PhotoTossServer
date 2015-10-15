@@ -45,6 +45,7 @@ public class PhotoRecord {
     public int tossCount ;
     public Long totalshares;
     public Boolean deleted;
+    @Unindex public BarcodeLocation barcodelocation;
 
     public PhotoRecord() {
         deleted = false;

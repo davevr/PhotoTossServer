@@ -60,13 +60,13 @@ public class CatchToss extends HttpServlet {
         final UserRecord curUser = Authenticator.CurrentUser(session);
 
         if (curUser != null) {
-            String tossStr = request.getParameter("toss");
-            String longStr = request.getParameter("long");
-            String latStr = request.getParameter("lat");
+            final String tossStr = request.getParameter("toss");
+            final String longStr = request.getParameter("long");
+            final String latStr = request.getParameter("lat");
 
-            Map<String, List<BlobKey>> blobs = blobstoreService.getUploads(request);
+            final Map<String, List<BlobKey>> blobs = blobstoreService.getUploads(request);
 
-            List<BlobKey> blobKeys = blobs.get("file");
+            final List<BlobKey> blobKeys = blobs.get("file");
 
             if (blobKeys == null || blobKeys.isEmpty()) {
                 response.setStatus(HttpServletResponse.SC_NOT_FOUND);
@@ -116,13 +116,11 @@ public class CatchToss extends HttpServlet {
                             newImage.ownerid = curUser.id;
 
                             // copy from source
-                            newImage.caption = sharedImage.caption;
                             newImage.created = sharedImage.created;
                             newImage.createdlat = sharedImage.createdlat;
                             newImage.createdlong = sharedImage.createdlong;
                             newImage.imageUrl = sharedImage.imageUrl;
                             newImage.thumbnailurl = sharedImage.thumbnailurl;
-                            newImage.tags = sharedImage.tags;
 
                             // copied on toss
                             if (sharedImage.originid != null)
